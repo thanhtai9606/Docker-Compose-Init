@@ -1,0 +1,70 @@
+version: '3'
+
+#VOLUMES
+# volumes:
+#   my-dir:
+#     dirver
+
+#NETWORK
+networks: 
+  my-network:
+    driver: bridge
+
+#SERVICES
+services:
+  #REDMINE
+  redmine:
+    container_name: redmine
+    image: redmine:latest
+    hostname: redmine
+    restart: always
+    ports:
+      - 6789:3000 #redmine port
+    environment:
+      REDMINE_DB_MYSQL: my-sql
+      REDMINE_DB_USERNAME: redmine
+      REDMINE_DB_PASSWORD: redmine
+      REDMINE_DB_DATABASE: redmine
+    depends_on:
+    - my-sql
+  #GITEA
+  gitea:
+    container_name: gitea-product
+    image: gitea/gitea:latest
+    hostname: gitea
+    restart: always
+    # volumes:
+    #   - ./data:/data
+    ports:
+      - 3000:3000
+      - 22:22
+
+  #MyAdmin
+  php-myadmin:
+    container_name: my-admin
+    image: phpmyadmin/phpmyadmin:latest
+    hostname: myadmin
+    restart: always
+    ports:
+      - 8081:80    
+    environment:
+      PMA_HOST: my-sql
+      MYSQL_ROOT_PASSWORD: redmine
+
+  #container MySql
+  my-sql:
+    container_name: mysql-product
+    image: mysql:5.7
+    hostname: mysql
+    restart: always 
+    environment:
+      MYSQL_USER: redmine      
+      MYSQL_DATABASE: redmine      
+      MYSQL_PASSWORD: redmine
+      MYSQL_ROOT_PASSWORD: redmine
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+
+  
+
+  
+   
