@@ -64,7 +64,17 @@ services:
       MYSQL_ROOT_PASSWORD: redmine
       MYSQL_RANDOM_ROOT_PASSWORD: 1
 
-  
+  #container MSSQL
+  mssql-server:
+    container_name: mssql-product
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    hostname: mssql
+    restart: always 
+    ports:
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: Y      
+      SA_PASSWORD: '@Sql2016'      
 
   
    
