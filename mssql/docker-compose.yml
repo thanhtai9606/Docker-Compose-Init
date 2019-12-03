@@ -1,0 +1,31 @@
+version: '3'
+
+#VOLUMES
+# volumes:
+#   my-dir:
+#     dirver
+
+#NETWORK
+networks: 
+  my-network:
+    driver: bridge
+
+#SERVICES
+services:
+  #container MSSQL
+  mssql-server:
+    container_name: mssql-product
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    hostname: mssql
+    restart: always 
+    volumes: 
+        - D:/git:/home
+    ports:
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: Y      
+      SA_PASSWORD: '@Sql2016'      
+
+
+  
+   
