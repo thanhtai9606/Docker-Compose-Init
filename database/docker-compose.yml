@@ -1,0 +1,56 @@
+version: '3'
+
+#VOLUMES
+# volumes:
+#   my-dir:
+#     dirver
+
+#NETWORK
+networks: 
+    my-network:
+      driver: bridge
+#SERVICES
+services:
+  #container MSSQL
+  mssql-server:
+    container_name: mssql-product
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    hostname: mssql
+    restart: always 
+    networks:
+      - my-network
+    volumes: 
+      - ./:/home
+    ports:
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: 'Y'      
+      SA_PASSWORD: 'Becamex@1234'
+      MSSQL_PID: 'PHDV4-3VJWD-N7JVP-FGPKY-XBV89'
+  #container MySql
+  mysql-db:
+    container_name: mysql-product
+    image: mysql:5.7
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    hostname: mysql-product
+    networks:
+      - my-network
+    restart: always 
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: admin
+  #MyAdmin
+  php-myadmin:
+    container_name: my-admin
+    image: phpmyadmin/phpmyadmin:latest
+    hostname: myadmin
+    networks:
+      - my-network
+    restart: always
+    ports:
+      - 8081:80    
+    environment:
+      PMA_HOST: mysql-product
+      MYSQL_ROOT_PASSWORD: admin

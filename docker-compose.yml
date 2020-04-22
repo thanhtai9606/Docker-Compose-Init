@@ -1,14 +1,9 @@
 version: '3'
 
-#VOLUMES
-# volumes:
-#   my-dir:
-#     dirver
-
 #NETWORK
 networks: 
-  my-network:
-    driver: bridge
+  database_my-network:
+    external: true
 
 #SERVICES
 services:
@@ -17,12 +12,14 @@ services:
     container_name: redmine
     image: redmine:latest
     restart: always
+    networks: 
+      - database_my-network
     ports:
       - 6677:3000 #redmine port
     environment:
-      REDMINE_DB_MYSQL: mysql-db
+      REDMINE_DB_MYSQL: mysql-product
       REDMINE_DB_USERNAME: root
-      REDMINE_DB_PASSWORD: redmine
+      REDMINE_DB_PASSWORD: admin
       REDMINE_DB_DATABASE: redmine
   #GITEA
   gitea:
@@ -30,64 +27,22 @@ services:
     image: gitea/gitea:latest
     hostname: gitea
     restart: always
-    # volumes:
-    #   - ./data:/data
+    networks: 
+      - database_my-network
     ports:
       - 3000:3000
       - 22:22
-
-  #MyAdmin
-  php-myadmin:
-    container_name: my-admin
-    image: phpmyadmin/phpmyadmin:latest
-    hostname: myadmin
-    restart: always
-    ports:
-      - 8081:80    
-    environment:
-      PMA_HOST: mysql-db
-      MYSQL_ROOT_PASSWORD: redmine
-
-  #container MySql
-  mysql-db:
-    container_name: mysql-product
-    image: mysql:5.7
-    hostname: myadmin
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    volumes:
-      - ./init:/docker-entrypoint-initdb.d
-    hostname: mysql
-    restart: always 
-    environment:
-      MYSQL_PASSWORD: redmine
-      MYSQL_ROOT_PASSWORD: redmine
-
   #container Camunda
   camunda:
     image: camunda/camunda-bpm-platform
     container_name: camunda
+    networks: 
+      - database_my-network
     ports:
       - '1313:8080'
     environment:
       DB_DRIVER: com.mysql.jdbc.Driver
       DB_URL: 'jdbc:mysql://mysql-db:3306/camunda?autoReconnect=true'
       DB_USERNAME: root
-      DB_PASSWORD: redmine
-    depends_on:
-      - mysql-db
-    #container MSSQL
-  mssql-server:
-    container_name: mssql-product
-    image: mcr.microsoft.com/mssql/server:2017-latest
-    hostname: mssql
-    restart: always 
-    volumes: 
-        - ./:/home
-    ports:
-      - 1433:1433
-    environment:
-      ACCEPT_EULA: 'Y'      
-      SA_PASSWORD: 'Becamex@1234'
-      MSSQL_PID: 'PHDV4-3VJWD-N7JVP-FGPKY-XBV89'
-  
+      DB_PASSWORD: admin
    
