@@ -16,14 +16,18 @@ services:
   redmine:
     container_name: redmine
     image: redmine:latest
+    hostname: redmine
     restart: always
     ports:
-      - 6677:3000 #redmine port
+      - 6789:3000 #redmine port
     environment:
       REDMINE_DB_MYSQL: mysql-db
       REDMINE_DB_USERNAME: root
       REDMINE_DB_PASSWORD: redmine
       REDMINE_DB_DATABASE: redmine
+    depends_on:
+    - mysql-db
+    - camunda # set for camunda run first
   #GITEA
   gitea:
     container_name: gitea-product
@@ -52,7 +56,6 @@ services:
   mysql-db:
     container_name: mysql-product
     image: mysql:5.7
-    hostname: myadmin
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - ./init:/docker-entrypoint-initdb.d
@@ -67,7 +70,7 @@ services:
     image: camunda/camunda-bpm-platform
     container_name: camunda
     ports:
-      - '1313:8080'
+      - '1234:8080'
     environment:
       DB_DRIVER: com.mysql.jdbc.Driver
       DB_URL: 'jdbc:mysql://mysql-db:3306/camunda?autoReconnect=true'
@@ -75,19 +78,18 @@ services:
       DB_PASSWORD: redmine
     depends_on:
       - mysql-db
-    #container MSSQL
+     
+  #container MSSQL
   mssql-server:
     container_name: mssql-product
     image: mcr.microsoft.com/mssql/server:2017-latest
     hostname: mssql
     restart: always 
-    volumes: 
-        - ./:/home
     ports:
       - 1433:1433
     environment:
-      ACCEPT_EULA: 'Y'      
-      SA_PASSWORD: 'Becamex@1234'
-      MSSQL_PID: 'PHDV4-3VJWD-N7JVP-FGPKY-XBV89'
+      ACCEPT_EULA: Y      
+      SA_PASSWORD: '@Sql2016'      
+
   
    
