@@ -14,6 +14,8 @@ services:
     restart: always
     networks: 
       - database_my-network
+    volumes: 
+      - ./redmine:/home/redmine:z
     ports:
       - 6677:3000 #redmine port
     environment:

@@ -20,7 +20,7 @@ services:
     networks:
       - my-network
     volumes: 
-      - ./:/home
+      - ./:/home #very important with z the end
     ports:
       - 1433:1433
     environment:
