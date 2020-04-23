@@ -15,7 +15,7 @@ services:
     networks: 
       - database_my-network
     volumes: 
-      - ./redmine:/home/redmine:z
+      - ./redmine:/home/redmine
     ports:
       - 6677:3000 #redmine port
     environment:
